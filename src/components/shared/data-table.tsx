@@ -39,7 +39,8 @@ export function DataTable<TData, TValue>({
 	onPageSizeChange,
 	onExport,
 	rowClassName,
-	enableColumnVisibility
+	enableColumnVisibility,
+	children
 }: DataTableProps<TData, TValue> & {
 	searchValue?: string
 	onSearchChange?: (v: string) => void
@@ -50,6 +51,7 @@ export function DataTable<TData, TValue>({
 	onPageChange?: (pageIndex: number) => void
 	onPageSizeChange?: (pageSize: number) => void
 	rowClassName?: string
+	children?: React.ReactNode
 }) {
 	const table = useReactTable({
 		data,
@@ -67,7 +69,9 @@ export function DataTable<TData, TValue>({
 				onExport={onExport}
 				enableColumnVisibility={enableColumnVisibility}
 				totalItems={totalItems}
-			/>
+			>
+				{children}
+			</DataTableToolbar>
 
 			<div className="overflow-auto rounded-md flex-1 flex flex-col justify-between border ">
 				<ScrollArea className={cn('w-full flex-1')}>

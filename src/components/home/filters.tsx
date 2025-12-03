@@ -21,83 +21,91 @@ interface FiltersProps {
 
 export function Filters({ filters, onFilterChange, onClearFilters }: FiltersProps) {
 	return (
-		<div className="grid gap-4 p-4 border rounded-lg bg-card text-card-foreground shadow-sm">
-			<div className="flex items-center justify-between">
-				<h3 className="font-semibold tracking-tight">Filtros de Búsqueda</h3>
-				<Button
-					variant="outline"
-					size="sm"
-					onClick={onClearFilters}
-					className="h-8 px-2 lg:px-3"
-				>
-					<X className="mr-2 h-4 w-4" />
-					Limpiar
-				</Button>
-			</div>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-				<div className="space-y-2">
-					<Label htmlFor="firstName">Nombres</Label>
+		<div className="p-1">
+
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+				<div className="space-y-1">
+					<Label htmlFor="firstName" className="text-xs">Nombres</Label>
 					<Input
 						id="firstName"
-						placeholder="Buscar por nombre..."
+						placeholder="Filtrar..."
 						value={filters.firstName}
 						onChange={(e) => onFilterChange('firstName', e.target.value)}
+						className="h-8 text-sm"
 					/>
 				</div>
-				<div className="space-y-2">
-					<Label htmlFor="lastName">Apellidos</Label>
+				<div className="space-y-1">
+					<Label htmlFor="lastName" className="text-xs">Apellidos</Label>
 					<Input
 						id="lastName"
-						placeholder="Buscar por apellido..."
+						placeholder="Filtrar..."
 						value={filters.lastName}
 						onChange={(e) => onFilterChange('lastName', e.target.value)}
+						className="h-8 text-sm"
 					/>
 				</div>
-				<div className="space-y-2">
-					<Label htmlFor="department">Departamento</Label>
+				<div className="space-y-1">
+					<Label htmlFor="department" className="text-xs">Departamento</Label>
 					<Input
 						id="department"
-						placeholder="Buscar por departamento..."
+						placeholder="Filtrar..."
 						value={filters.department}
 						onChange={(e) => onFilterChange('department', e.target.value)}
+						className="h-8 text-sm"
 					/>
 				</div>
-				<div className="space-y-2">
-					<Label htmlFor="district">Distrito</Label>
+				<div className="space-y-1">
+					<Label htmlFor="district" className="text-xs">Distrito</Label>
 					<Input
 						id="district"
-						placeholder="Buscar por distrito..."
+						placeholder="Filtrar..."
 						value={filters.district}
 						onChange={(e) => onFilterChange('district', e.target.value)}
+						className="h-8 text-sm"
 					/>
 				</div>
-				<div className="space-y-2">
-					<Label htmlFor="age">Edad</Label>
+				<div className="space-y-1">
+					<Label htmlFor="age" className="text-xs">Edad</Label>
 					<Input
 						id="age"
-						placeholder="Buscar por edad..."
+						placeholder="Filtrar..."
 						value={filters.age}
 						onChange={(e) => onFilterChange('age', e.target.value)}
+						className="h-8 text-sm"
 					/>
 				</div>
-				<div className="space-y-2">
-					<Label htmlFor="occupation">Ocupación</Label>
+				<div className="space-y-1">
+					<Label htmlFor="occupation" className="text-xs">Ocupación</Label>
 					<Input
 						id="occupation"
-						placeholder="Buscar por ocupación..."
+						placeholder="Filtrar..."
 						value={filters.occupation}
 						onChange={(e) => onFilterChange('occupation', e.target.value)}
+						className="h-8 text-sm"
 					/>
 				</div>
-				<div className="space-y-2">
-					<Label htmlFor="socialMedia">Redes Sociales</Label>
+				<div className="space-y-1">
+					<Label htmlFor="socialMedia" className="text-xs">Redes Sociales</Label>
 					<Input
 						id="socialMedia"
-						placeholder="Buscar por redes..."
+						placeholder="Filtrar..."
 						value={filters.socialMedia}
 						onChange={(e) => onFilterChange('socialMedia', e.target.value)}
+						className="h-8 text-sm"
 					/>
 				</div>
+				<div className="space-y-1">
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={onClearFilters}
+						className="h-8 px-2 text-muted-foreground hover:text-foreground"
+					>
+						<X className="mr-2 h-4 w-4" />
+						Limpiar filtros
+					</Button>
+				</div>
+
 			</div>
 		</div>
 	)

@@ -4,7 +4,11 @@ import rawData from '@/app/list.json'
 import { DataTable } from '@/components/shared/data-table'
 import { columns } from '@/components/home/columns'
 import { Filters, type FilterState } from '@/components/home/filters'
+import { PersonDetailDialog } from '@/components/home/person-detail-dialog'
+import { Button } from '@/components/ui/button'
+import { Filter } from 'lucide-react'
 import type { Person } from '@/types/person'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
 export default function HomePage() {
 	const [filters, setFilters] = useState<FilterState>({
@@ -16,6 +20,11 @@ export default function HomePage() {
 		occupation: '',
 		socialMedia: ''
 	})
+
+	const [globalFilter, setGlobalFilter] = useState('')
+	const [showFilters, setShowFilters] = useState(false)
+	const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
+	const [isDialogOpen, setIsDialogOpen] = useState(false)
 
 	const [pagination, setPagination] = useState({
 		pageIndex: 1,
@@ -30,6 +39,16 @@ export default function HomePage() {
 	// Filter data
 	const filteredData = useMemo(() => {
 		return allData.filter((person) => {
+			// Global Search
+			if (globalFilter) {
+				const searchLower = globalFilter.toLowerCase()
+				const matchesGlobal = Object.values(person).some((val) =>
+					String(val || '').toLowerCase().includes(searchLower)
+				)
+				if (!matchesGlobal) return false
+			}
+
+			// Specific Filters
 			const matches = (val: string | number | null, filter: string) => {
 				if (!filter) return true
 				if (val === null || val === undefined) return false
@@ -46,7 +65,7 @@ export default function HomePage() {
 				matches(person.socialMedia, filters.socialMedia)
 			)
 		})
-	}, [allData, filters])
+	}, [allData, filters, globalFilter])
 
 	// Pagination
 	const paginatedData = useMemo(() => {
@@ -59,7 +78,7 @@ export default function HomePage() {
 
 	const handleFilterChange = (key: keyof FilterState, value: string) => {
 		setFilters((prev) => ({ ...prev, [key]: value }))
-		setPagination((prev) => ({ ...prev, pageIndex: 1 })) // Reset to first page on filter change
+		setPagination((prev) => ({ ...prev, pageIndex: 1 }))
 	}
 
 	const handleClearFilters = () => {
@@ -72,33 +91,67 @@ export default function HomePage() {
 			occupation: '',
 			socialMedia: ''
 		})
+		setGlobalFilter('')
 		setPagination((prev) => ({ ...prev, pageIndex: 1 }))
 	}
 
+	const handleRowClick = (person: Person) => {
+		setSelectedPerson(person)
+		setIsDialogOpen(true)
+	}
+
 	return (
-		<div className="container mx-auto py-10 space-y-8">
-			<div className="flex flex-col space-y-2">
-				<h1 className="text-3xl font-bold tracking-tight">Lista de Personas</h1>
-				<p className="text-muted-foreground">
-					Gestiona y visualiza la información de la lista.
-				</p>
+		<div className="container mx-auto py-6 space-y-6 h-screen flex flex-col">
+			<div className="flex flex-col space-y-4 flex-shrink-0">
+				<div className="flex items-center justify-between">
+					<div>
+						<h1 className="text-2xl font-bold tracking-tight">Lista de Personas</h1>
+						<p className="text-sm text-muted-foreground">
+							{filteredData.length} registros encontrados
+						</p>
+					</div>
+				</div>
+
+				<Collapsible open={showFilters} onOpenChange={setShowFilters}>
+					<CollapsibleContent>
+						<Filters
+							filters={filters}
+							onFilterChange={handleFilterChange}
+							onClearFilters={handleClearFilters}
+						/>
+					</CollapsibleContent>
+				</Collapsible>
 			</div>
 
-			<Filters
-				filters={filters}
-				onFilterChange={handleFilterChange}
-				onClearFilters={handleClearFilters}
-			/>
+			<div className=" flex-1  border-red-500">
+				<DataTable
+					columns={columns}
+					data={paginatedData}
+					totalItems={filteredData.length}
+					pageIndex={pagination.pageIndex}
+					pageSize={pagination.pageSize}
+					totalPages={totalPages}
+					onPageChange={(page) => setPagination((prev) => ({ ...prev, pageIndex: page }))}
+					onPageSizeChange={(size) => setPagination((prev) => ({ ...prev, pageSize: size, pageIndex: 1 }))}
+					onRowClick={handleRowClick}
+					searchValue={globalFilter}
+					onSearchChange={setGlobalFilter}
+				>
+					<Collapsible open={showFilters} onOpenChange={setShowFilters}>
+						<CollapsibleTrigger asChild>
+							<Button variant="outline" size="sm" className="gap-2">
+								<Filter className="h-4 w-4" />
+								Filtros por campo
+							</Button>
+						</CollapsibleTrigger>
+					</Collapsible>
+				</DataTable>
+			</div>
 
-			<DataTable
-				columns={columns}
-				data={paginatedData}
-				totalItems={filteredData.length}
-				pageIndex={pagination.pageIndex}
-				pageSize={pagination.pageSize}
-				totalPages={totalPages}
-				onPageChange={(page) => setPagination((prev) => ({ ...prev, pageIndex: page }))}
-				onPageSizeChange={(size) => setPagination((prev) => ({ ...prev, pageSize: size, pageIndex: 1 }))}
+			<PersonDetailDialog
+				person={selectedPerson}
+				open={isDialogOpen}
+				onOpenChange={setIsDialogOpen}
 			/>
 		</div>
 	)

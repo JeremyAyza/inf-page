@@ -18,6 +18,7 @@ export interface DataTableToolbarProps<TData> {
 	onSearchChange?: (value: string) => void
 	onExport?: () => void
 	enableColumnVisibility?: boolean
+	children?: React.ReactNode
 }
 
 export function DataTableToolbar<TData>({
@@ -25,23 +26,27 @@ export function DataTableToolbar<TData>({
 	searchValue,
 	onSearchChange,
 	onExport,
-	enableColumnVisibility = true
+	enableColumnVisibility = true,
+	children
 }: DataTableToolbarProps<TData>) {
 	return (
 		<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between p-[1.5px]">
 			{/* 🔍 Input controlado desde el padre */}
-			{onSearchChange ? (
-				<Input
-					suffixIcon={<Search size={18} />}
-					value={searchValue ?? ''}
-					onChange={(e) => onSearchChange?.(e.target.value)}
-					placeholder="Buscar..."
-					className=" min-w-[300px] "
-				/>
-			) : (
-				<div />
-			)}
+			<div className="flex items-center gap-2 flex-1">
+				{onSearchChange && (
+					<Input
+						suffixIcon={<Search size={18} />}
+						value={searchValue ?? ''}
+						onChange={(e) => onSearchChange?.(e.target.value)}
+						placeholder="Buscar..."
+						className="max-w-[300px]"
+					/>
+				)}
+
+			</div>
+
 			<div className="flex gap-x-2 items-center">
+				{children}
 				{enableColumnVisibility && (
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
