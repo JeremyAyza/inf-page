@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import rawData from '@/app/list.json'
+import type { SortingState } from '@tanstack/react-table'
 
 import { DataTable } from '@/components/shared/data-table'
 import { columns } from '@/components/home/columns'
@@ -28,6 +29,8 @@ export default function HomePage() {
 	const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const [isRegisterDialogOpen, setIsRegisterDialogOpen] = useState(false)
+
+	const [sorting, setSorting] = useState<SortingState>([])
 
 	const [pagination, setPagination] = useState({
 		pageIndex: 1,
@@ -71,12 +74,35 @@ export default function HomePage() {
 		})
 	}, [allData, filters, globalFilter])
 
-	// Pagination
+	// Sort data (before pagination)
+	const sortedData = useMemo(() => {
+		if (sorting.length === 0) return filteredData
+
+		const sorted = [...filteredData]
+		const sort = sorting[0]
+
+		sorted.sort((a, b) => {
+			const aValue = a[sort.id as keyof Person]
+			const bValue = b[sort.id as keyof Person]
+
+			// Convert to lowercase strings for case-insensitive comparison
+			const aStr = String(aValue ?? '').toLowerCase()
+			const bStr = String(bValue ?? '').toLowerCase()
+
+			const comparison = aStr.localeCompare(bStr, 'es', { numeric: true })
+
+			return sort.desc ? -comparison : comparison
+		})
+
+		return sorted
+	}, [filteredData, sorting])
+
+	// Pagination (after sorting)
 	const paginatedData = useMemo(() => {
 		const start = (pagination.pageIndex - 1) * pagination.pageSize
 		const end = start + pagination.pageSize
-		return filteredData.slice(start, end)
-	}, [filteredData, pagination])
+		return sortedData.slice(start, end)
+	}, [sortedData, pagination])
 
 	const totalPages = Math.ceil(filteredData.length / pagination.pageSize)
 
@@ -141,6 +167,8 @@ export default function HomePage() {
 					onRowClick={handleRowClick}
 					searchValue={globalFilter}
 					onSearchChange={setGlobalFilter}
+					sorting={sorting}
+					onSortingChange={setSorting}
 				>
 					<Button
 						variant="default"

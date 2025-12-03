@@ -4,7 +4,8 @@ import {
 	flexRender,
 	getCoreRowModel,
 	getSortedRowModel,
-	useReactTable
+	useReactTable,
+	type SortingState
 } from '@tanstack/react-table'
 import { ArrowUpDown, Loader2 } from 'lucide-react'
 
@@ -40,7 +41,9 @@ export function DataTable<TData, TValue>({
 	onExport,
 	rowClassName,
 	enableColumnVisibility,
-	children
+	children,
+	sorting,
+	onSortingChange
 }: DataTableProps<TData, TValue> & {
 	searchValue?: string
 	onSearchChange?: (v: string) => void
@@ -52,12 +55,19 @@ export function DataTable<TData, TValue>({
 	onPageSizeChange?: (pageSize: number) => void
 	rowClassName?: string
 	children?: React.ReactNode
+	sorting?: SortingState
+	onSortingChange?: (sorting: SortingState) => void
 }) {
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
+		state: {
+			sorting: sorting || []
+		},
+		onSortingChange: onSortingChange,
+		manualSorting: true, // Sorting is handled externally
 		sortingFns: {
 			// Custom case-insensitive sorting function
 			alphanumeric: (rowA, rowB, columnId) => {
