@@ -5,6 +5,7 @@ import {
 	getCoreRowModel,
 	getSortedRowModel,
 	useReactTable,
+	type OnChangeFn,
 	type SortingState
 } from '@tanstack/react-table'
 import { ArrowUpDown, Loader2 } from 'lucide-react'
@@ -56,7 +57,7 @@ export function DataTable<TData, TValue>({
 	rowClassName?: string
 	children?: React.ReactNode
 	sorting?: SortingState
-	onSortingChange?: (sorting: SortingState) => void
+	onSortingChange?: OnChangeFn<SortingState>
 }) {
 	const table = useReactTable({
 		data,
