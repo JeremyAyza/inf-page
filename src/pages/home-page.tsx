@@ -3,6 +3,8 @@ import rawData from '@/app/list.json'
 import type { SortingState } from '@tanstack/react-table'
 
 import { DataTable } from '@/components/shared/data-table'
+import { Contador } from '@/components/shared/contador'
+
 import { columns } from '@/components/home/columns'
 import { Filters, type FilterState } from '@/components/home/filters'
 import { PersonDetailDialog } from '@/components/home/person-detail-dialog'
@@ -134,6 +136,7 @@ export default function HomePage() {
 	return (
 		<div className="container mx-auto py-6 space-y-6 h-screen flex flex-col">
 			<div className="flex flex-col space-y-4 flex-shrink-0">
+				<Contador/>
 				<div className="flex items-center justify-between">
 					<div>
 						<h1 className="text-2xl font-bold tracking-tight">Lista de Personas</h1>
@@ -153,6 +156,7 @@ export default function HomePage() {
 					</CollapsibleContent>
 				</Collapsible>
 			</div>
+
 
 			<div className=" flex-1  border-red-500">
 				<DataTable
