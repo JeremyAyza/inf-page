@@ -57,7 +57,20 @@ export function DataTable<TData, TValue>({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel()
+		getSortedRowModel: getSortedRowModel(),
+		sortingFns: {
+			// Custom case-insensitive sorting function
+			alphanumeric: (rowA, rowB, columnId) => {
+				const a = rowA.getValue(columnId)
+				const b = rowB.getValue(columnId)
+
+				// Convert to lowercase strings for comparison
+				const aStr = String(a ?? '').toLowerCase()
+				const bStr = String(b ?? '').toLowerCase()
+
+				return aStr.localeCompare(bStr, 'es', { numeric: true })
+			}
+		}
 	})
 
 	return (

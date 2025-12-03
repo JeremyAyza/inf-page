@@ -11,6 +11,7 @@ export type FilterState = {
 	age: string
 	occupation: string
 	socialMedia: string
+	motive: string
 }
 
 interface FiltersProps {
@@ -91,6 +92,16 @@ export function Filters({ filters, onFilterChange, onClearFilters }: FiltersProp
 						placeholder="Filtrar..."
 						value={filters.socialMedia}
 						onChange={(e) => onFilterChange('socialMedia', e.target.value)}
+						className="h-8 text-sm"
+					/>
+				</div>
+				<div className="space-y-1">
+					<Label htmlFor="motive" className="text-xs">Motivo</Label>
+					<Input
+						id="motive"
+						placeholder="Filtrar..."
+						value={filters.motive}
+						onChange={(e) => onFilterChange('motive', e.target.value)}
 						className="h-8 text-sm"
 					/>
 				</div>

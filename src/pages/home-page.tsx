@@ -5,8 +5,9 @@ import { DataTable } from '@/components/shared/data-table'
 import { columns } from '@/components/home/columns'
 import { Filters, type FilterState } from '@/components/home/filters'
 import { PersonDetailDialog } from '@/components/home/person-detail-dialog'
+import { RegisterDialog } from '@/components/home/register-dialog'
 import { Button } from '@/components/ui/button'
-import { Filter } from 'lucide-react'
+import { Filter, UserPlus } from 'lucide-react'
 import type { Person } from '@/types/person'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
@@ -18,13 +19,15 @@ export default function HomePage() {
 		district: '',
 		age: '',
 		occupation: '',
-		socialMedia: ''
+		socialMedia: '',
+		motive: ''
 	})
 
 	const [globalFilter, setGlobalFilter] = useState('')
 	const [showFilters, setShowFilters] = useState(false)
 	const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
+	const [isRegisterDialogOpen, setIsRegisterDialogOpen] = useState(false)
 
 	const [pagination, setPagination] = useState({
 		pageIndex: 1,
@@ -62,7 +65,8 @@ export default function HomePage() {
 				matches(person.district, filters.district) &&
 				matches(person.age, filters.age) &&
 				matches(person.occupation, filters.occupation) &&
-				matches(person.socialMedia, filters.socialMedia)
+				matches(person.socialMedia, filters.socialMedia) &&
+				matches(person.motive, filters.motive)
 			)
 		})
 	}, [allData, filters, globalFilter])
@@ -89,7 +93,8 @@ export default function HomePage() {
 			district: '',
 			age: '',
 			occupation: '',
-			socialMedia: ''
+			socialMedia: '',
+			motive: ''
 		})
 		setGlobalFilter('')
 		setPagination((prev) => ({ ...prev, pageIndex: 1 }))
@@ -137,6 +142,15 @@ export default function HomePage() {
 					searchValue={globalFilter}
 					onSearchChange={setGlobalFilter}
 				>
+					<Button
+						variant="default"
+						size="sm"
+						className="gap-2"
+						onClick={() => setIsRegisterDialogOpen(true)}
+					>
+						<UserPlus className="h-4 w-4" />
+						Registrar
+					</Button>
 					<Collapsible open={showFilters} onOpenChange={setShowFilters}>
 						<CollapsibleTrigger asChild>
 							<Button variant="outline" size="sm" className="gap-2">
@@ -152,6 +166,11 @@ export default function HomePage() {
 				person={selectedPerson}
 				open={isDialogOpen}
 				onOpenChange={setIsDialogOpen}
+			/>
+
+			<RegisterDialog
+				open={isRegisterDialogOpen}
+				onOpenChange={setIsRegisterDialogOpen}
 			/>
 		</div>
 	)
